@@ -1,14 +1,28 @@
 import streamlit as st
 
-# 定义选项卡名称列表
-tabs = ["Tab 1", "Tab 2", "Tab 3"]
+# 定義分頁內容
+page1_content = """
+    ## 第一個標題
+    這是第一個分頁的內容。
+"""
 
-# 在sidebar中创建选项卡
-selected_tab = st.sidebar.radio("Select Tab", tabs)
+page2_content = """
+    ## 第二個標題
+    這是第二個分頁的內容。
+"""
 
-# 根据选项卡显示相应的内容
-for tab in tabs:
-    if tab == selected_tab:
-        st.sidebar.markdown(f"**{tab}**")
-    else:
-        st.sidebar.markdown(tab)
+page3_content = """
+    ## 第三個標題
+    這是第三個分頁的內容。
+"""
+
+# 在Sidebar中顯示分頁選項
+page = st.sidebar.selectbox("選擇分頁", ("分頁1", "分頁2", "分頁3"))
+
+# 根據選擇的分頁顯示相應的內容
+if page == "分頁1":
+    st.markdown(page1_content)
+elif page == "分頁2":
+    st.markdown(page2_content)
+elif page == "分頁3":
+    st.markdown(page3_content)
