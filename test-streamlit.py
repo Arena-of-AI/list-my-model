@@ -11,7 +11,6 @@ for model in models:
     st.write(f"Model Name: {model.name}")
     st.write(f"Model ID: {model.id}")
     st.write(f"Owner: {model.owner}")
-    st.write("---） 
 
 
 
