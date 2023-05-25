@@ -1,37 +1,26 @@
 import streamlit as st
+import openai
 
-def authenticate(password):
-    # 在這裡執行密碼驗證邏輯，例如比對密碼是否正確
-    return password == "your_password"
+# 输入 OpenAI API KEY
+api_key = st.text_input("Enter your OpenAI API KEY")
 
-def main():
-    # 檢查 Session State 中是否已進行過驗證
-    if "authenticated" not in st.session_state:
-        st.session_state.authenticated = False
+# 设置 OpenAI API 密钥
+openai.api_key = api_key
 
-    # 如果尚未進行驗證，請求使用者輸入密碼
-    if not st.session_state.authenticated:
-        password = st.text_input("請輸入密碼", type="password")
-        if st.button("驗證"):
-            if authenticate(password):
-                st.session_state.authenticated = True
-                st.success("驗證成功！")
-            else:
-                st.error("驗證失敗！請再試一次。")
-    else:
-        # 顯示多頁選擇的畫面
-        page = st.sidebar.selectbox("選擇頁面", ("頁面 1", "頁面 2", "頁面 3"))
+# 获取现有模型列表
+response = openai.ChatCompletion.list_models()
 
-        # 根據選擇顯示相應的內容和按鈕
-        if page == "頁面 1":
-            st.title("頁面 1")
-            st.button("按鈕 1")
-        elif page == "頁面 2":
-            st.title("頁面 2")
-            st.button("按鈕 2")
-        elif page == "頁面 3":
-            st.title("頁面 3")
-            st.button("按鈕 3")
+# 解析响应数据
+if response and "data" in response:
+    models = response["data"]
+else:
+    st.error("Error fetching model list")
 
-if __name__ == "__main__":
-    main()
+# 显示模型列表
+st.title("Existing Models")
+for model in models:
+    st.write(f"- Model ID: {model['id']}")
+    st.write(f"  Model Name: {model['name']}")
+    st.write(f"  Model Description: {model['description']}")
+    st.write(f"  Model Owner: {model['owner']}")
+    st.write("---")
