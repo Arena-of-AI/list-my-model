@@ -1,8 +1,10 @@
 import streamlit as st
 import openai
 
+api_key = st.text_input("Enter your OpenAI API KEY")
+
 # 设置OpenAI API密钥
-openai.api_key = "YOUR_API_KEY"
+openai.api_key = api_key
 
 # 创建函数以获取并显示所有模型
 def list_models():
