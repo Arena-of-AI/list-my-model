@@ -13,10 +13,7 @@ def list_models():
 
     # 显示模型信息
     for model in models:
-        st.write(f"Model Name: {model.name}")
-        st.write(f"Model ID: {model.id}")
-        st.write(f"Owner: {model.owner}")
-        st.write("---")
+        st.write(f"Model Name: {model}")
 
 # 设置标题
 st.title("List of Models")
