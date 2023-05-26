@@ -13,7 +13,7 @@ def list_models():
     models = openai.Model.list()
 
     # 筛选并显示模型
-    filtered_models = [model for model in models['data'] if model['owned_by'] not in ['openai-internal', 'openai', 'system']]
+    filtered_models = [model for model in models['data'] if model['owned_by'] not in ['openai-internal', 'openai', 'system','openai-dev']]
 
     # 输出终端机消息到Streamlit
     st.code(filtered_models)
