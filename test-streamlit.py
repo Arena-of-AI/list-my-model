@@ -1,5 +1,6 @@
 import streamlit as st
 import openai
+from datetime import datetime
 
 # 输入API密钥
 api_key = st.text_input("Enter your OpenAI API KEY")
@@ -12,11 +13,19 @@ def list_models():
     # 获取模型列表
     models = openai.Model.list()
 
-    # 筛选并显示模型
-    filtered_models = [model for model in models['data'] if model['owned_by'] not in ['openai-internal', 'openai', 'system','openai-dev']]
+    # 筛选并提取需要的字段
+    filtered_models = [
+        {
+            "created": datetime.fromtimestamp(model["created"]).strftime("%Y-%m-%d %H:%M:%S"),
+            "id": model["id"],
+            "parent": model["parent"]
+        }
+        for model in models['data']
+        if model['owned_by'] not in ['openai-internal', 'openai', 'system', 'openai-dev']
+    ]
 
     # 输出终端机消息到Streamlit
-    st.code(filtered_models)
+    st.table(filtered_models)
 
 # 设置标题
 st.title("List of Models")
