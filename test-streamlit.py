@@ -12,8 +12,11 @@ def list_models():
     # 获取模型列表
     models = openai.Model.list()
 
+    # 筛选并显示模型
+    filtered_models = [model for model in models['data'] if model['owned_by'] not in ['openai-internal', 'openai', 'system']]
+
     # 输出终端机消息到Streamlit
-    st.code(models)
+    st.code(filtered_models)
 
 # 设置标题
 st.title("List of Models")
