@@ -11,17 +11,14 @@ openai.api_key = api_key
 def list_fine_tuned_models():
     # 获取Fine-Tuned模型列表
     models = openai.FineTune.list()
-
-    # 提取模型名称并显示
-    model_names = [model['model_id'] for model in models['data']]
-    st.write("Fine-Tuned Models:")
-    for name in model_names:
-        st.write(name)
+    
+    # 输出终端机消息到Streamlit
+    st.code(models)
 
 # 设置标题
 st.title("List of Fine-Tuned Models")
 
 # 检查是否输入了API密钥
 if api_key:
-    # 调用函数以显示所有Fine-Tuned模型名称
+    # 调用函数以显示所有Fine-Tuned模型
     list_fine_tuned_models()
