@@ -16,9 +16,9 @@ def list_models():
     # 筛选并提取需要的字段
     filtered_models = [
         {
-            "created": datetime.fromtimestamp(model["created"]).strftime("%Y-%m-%d %H:%M:%S"),
-            "id": model["id"],
-            "parent": model["parent"]
+            "Created at": datetime.fromtimestamp(model["created"]).strftime("%Y-%m-%d %H:%M:%S"),
+            "Model Name (ID)": model["id"],
+            "Parent Model": model["parent"]
         }
         for model in models['data']
         if model['owned_by'] not in ['openai-internal', 'openai', 'system', 'openai-dev']
@@ -44,7 +44,7 @@ if api_key:
     # 当删除按钮被按下时执行删除操作
     if delete_button:
         if model_name:
-            model_names = [model["id"] for model in models]
+            model_names = [model["Model Name (ID)"] for model in models]
             if model_name in model_names:
                 # 显示确认对话框
                 confirmation = st.checkbox("Are you sure you want to delete the model?")
