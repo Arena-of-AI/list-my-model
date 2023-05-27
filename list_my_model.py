@@ -1,36 +1,61 @@
-import streamlit as st
+import datetime
 import openai
-from datetime import datetime
+import streamlit as st
 
-# 输入API密钥
-api_key = st.text_input("Enter your OpenAI API KEY")
+# 获取终端输出并显示表格
+def list_fine_tuned_tasks(api_key):
+    openai.api_key = api_key
+    terminal_output = openai.FineTune.list()
+    return terminal_output["data"]
 
-# 设置OpenAI API密钥
-openai.api_key = api_key
+# 解析终端输出为表格行列表
+def parse_terminal_output(terminal_output):
+    rows = []
+    for task in terminal_output:
+        hyperparams = task["hyperparams"]
+        training_file = task["training_files"][0]["filename"]
 
-# 创建函数以获取并显示所有模型
-def list_models():
-    # 获取模型列表
-    models = openai.Model.list()
+        created_at = datetime.datetime.fromtimestamp(task["created_at"]).strftime("%Y-%m-%d %H:%M:%S")
 
-    # 筛选并提取需要的字段
-    filtered_models = [
-        {
-            "created": datetime.fromtimestamp(model["created"]).strftime("%Y-%m-%d %H:%M:%S"),
-            "id": model["id"],
-            "parent": model["parent"]
+        row = {
+            "Time": created_at,
+            "Model Name": task["fine_tuned_model"],
+            "Job ID": task["id"],
+            "Parent Model": task["model"],
+            "Status": task["status"],
+            "Batch Size": hyperparams["batch_size"],
+            "Learning Rate Multiplier": hyperparams["learning_rate_multiplier"],
+            "Epochs": hyperparams["n_epochs"],
+            "Prompt Loss Weight": hyperparams["prompt_loss_weight"],
+            "Training File": training_file
         }
-        for model in models['data']
-        if model['owned_by'] not in ['openai-internal', 'openai', 'system', 'openai-dev']
-    ]
+        rows.append(row)
 
-    # 输出终端机消息到Streamlit
-    st.table(filtered_models)
+    return rows
 
-# 设置标题
-st.title("List of Models")
+# 删除指定的模型
+def delete_model(model_name):
+    openai.Model.delete(model_name)
+    st.success(f"Model '{model_name}' deleted successfully.")
 
-# 检查是否输入了API密钥
+# 读取 API 密钥
+api_key = st.text_input("Enter your OpenAI API key", type="password")
+
+# 当用户提供 API 密钥时，获取终端输出并解析为表格行列表
 if api_key:
-    # 调用函数以显示所有模型
-    list_models()
+    tasks = list_fine_tuned_tasks(api_key)
+    rows = parse_terminal_output(tasks)
+
+    for row in rows:
+        # 获取模型名称和索引
+        model_name = row["Model Name"]
+        index = rows.index(row)
+
+        # 在行的末尾添加删除按钮
+        delete_button = st.button(f"Delete {model_name}", key=f"delete_{index}")
+        if delete_button:
+            delete_model(model_name)
+
+    st.table(rows)
+else:
+    st.warning("Please enter your OpenAI API key.")
