@@ -47,7 +47,7 @@ if api_key:
             model_names = [model["id"] for model in models]
             if model_name in model_names:
                 # 显示确认对话框
-                confirmation = st.confirm("Are you sure you want to delete the model?")
+                confirmation = st.checkbox("Are you sure you want to delete the model?")
 
                 # 当确认对话框为True时执行删除操作
                 if confirmation:
