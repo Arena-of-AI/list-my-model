@@ -25,13 +25,7 @@ def list_models():
     ]
 
     # 输出终端机消息到Streamlit
-    st.write("Model Created", "Model ID", "Parent", "Actions", sep="\t")
-    for model in filtered_models:
-        st.write(model['created'], model['id'], model['parent'], st.button(f"Delete {model['id']}"))
-
-        if st.button(f"Delete {model['id']}"):
-            openai.Model.delete(model['id'])
-            st.success(f"Model {model['id']} deleted successfully.")
+    st.table(filtered_models)
 
 # 设置标题
 st.title("List of Models")
@@ -40,3 +34,19 @@ st.title("List of Models")
 if api_key:
     # 调用函数以显示所有模型
     list_models()
+
+    # 添加对话框和删除按钮
+    model_name = st.text_input("Enter the model name to delete")
+    delete_button = st.button("Delete")
+
+    # 当删除按钮被按下时执行删除操作
+    if delete_button:
+        if model_name:
+            model_names = [model["id"] for model in filtered_models]
+            if model_name in model_names:
+                openai.Model.delete(model_name)
+                st.success(f"Model {model_name} has been deleted.")
+            else:
+                st.warning("Please enter a valid model name.")
+        else:
+            st.warning("Please enter a model name to delete.")
