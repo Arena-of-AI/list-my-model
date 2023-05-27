@@ -10,30 +10,39 @@ openai.api_key = api_key
 
 # 创建函数以获取并返回所有模型
 def list_models():
-    # 获取模型列表
-    models = openai.Model.list()
+    # 检查是否输入了API密钥
+    if not api_key:
+        st.warning("Please enter your OpenAI API KEY.")
+        return []
 
-    # 筛选并提取需要的字段
-    filtered_models = [
-        {
-            "Created at": datetime.fromtimestamp(model["created"]).strftime("%Y-%m-%d %H:%M:%S"),
-            "Model Name (ID)": model["id"],
-            "Parent Model": model["parent"]
-        }
-        for model in models['data']
-        if model['owned_by'] not in ['openai-internal', 'openai', 'system', 'openai-dev']
-    ]
+    try:
+        # 获取模型列表
+        models = openai.Model.list()
 
-    return filtered_models
+        # 筛选并提取需要的字段
+        filtered_models = [
+            {
+                "Created at": datetime.fromtimestamp(model["created"]).strftime("%Y-%m-%d %H:%M:%S"),
+                "Model Name (ID)": model["id"],
+                "Parent Model": model["parent"]
+            }
+            for model in models['data']
+            if model['owned_by'] not in ['openai-internal', 'openai', 'system', 'openai-dev']
+        ]
+
+        return filtered_models
+    except openai.error.AuthenticationError as e:
+        st.error(str(e))
+        return []
 
 # 设置标题
 st.title("List of Models")
 
-# 检查是否输入了API密钥
-if api_key:
-    # 调用函数以获取所有模型
-    models = list_models()
+# 调用函数以获取所有模型
+models = list_models()
 
+# 检查模型列表是否为空
+if models:
     # 显示模型列表的表格
     st.table(models)
 
