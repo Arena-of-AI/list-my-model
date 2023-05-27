@@ -24,6 +24,13 @@ def list_models():
         if model['owned_by'] not in ['openai-internal', 'openai', 'system', 'openai-dev']
     ]
 
+    # 在每一行数据末尾添加删除功能
+    for model in filtered_models:
+        delete_button = st.button(f"Delete {model['id']}")
+        if delete_button:
+            openai.Model.delete(model['id'])
+            st.success(f"Model {model['id']} deleted successfully.")
+
     # 输出终端机消息到Streamlit
     st.table(filtered_models)
 
