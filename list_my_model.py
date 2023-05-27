@@ -33,6 +33,7 @@ def list_models():
         return filtered_models
     except openai.error.AuthenticationError as e:
         st.error(str(e))
+        print(str(e))
         return []
 
 # 设置标题
@@ -76,5 +77,3 @@ if models:
                 st.warning("Please enter a valid model name.")
         else:
             st.warning("Please enter a model name to delete.")
-else:
-    st.info("This API key doesn't have any fine-tuned model.")
