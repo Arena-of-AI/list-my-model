@@ -19,6 +19,11 @@ def list_models():
         # 获取模型列表
         models = openai.Model.list()
 
+        # 检查模型列表是否为空
+        if not models['data']:
+            st.warning("This API Key doesn't have any fine-tuned model.")
+            return []
+
         # 筛选并提取需要的字段
         filtered_models = [
             {
@@ -33,7 +38,6 @@ def list_models():
         return filtered_models
     except openai.error.AuthenticationError as e:
         st.error(str(e))
-        print(str(e))
         return []
 
 # 设置标题
