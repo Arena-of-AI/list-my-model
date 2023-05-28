@@ -67,29 +67,18 @@ if models:
                 # 当确认对话框为True时执行删除操作
                 if confirmation:
                     # 删除模型
-                    st.text("Deleting the model...")
-
-                    # 执行命令并捕获输出
-                    process = subprocess.Popen(
-                        ['openai', 'model', 'delete', model_name],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE
-                    )
-                    stdout, stderr = process.communicate()
-
-                    # 解析命令输出
                     try:
-                        response = json.loads(stdout)
-                    except json.JSONDecodeError:
-                        response = {}
+                        response = openai.Model.delete(model_name)
 
-                    # 判断删除是否成功
-                    if response.get("deleted"):
-                        # 显示成功消息
-                        st.success("Model deleted successfully.")
-                    else:
-                        # 显示失败消息
-                        st.error("Failed to delete the model.")
+                        # 判断删除是否成功
+                        if response.get("deleted"):
+                            # 显示成功消息
+                            st.success("Model deleted successfully.")
+                        else:
+                            # 显示失败消息
+                            st.error("Failed to delete the model.")
+                    except openai.error.APIError as e:
+                        st.error(str(e))
             else:
                 st.warning("Please enter a valid model name.")
         else:
