@@ -51,7 +51,7 @@ if models:
     # 显示模型列表的表格
     st.table(models)
 
-    # 添加对话框和删除按钮
+    # 添加删除按钮
     st.title("Delete Your Fine-Tuned Models")
     model_name = st.text_input("To avoid accidental deletion, please type the model name (ID) you want to delete here")
     delete_button = st.button("Delete")
@@ -61,24 +61,19 @@ if models:
         if model_name:
             model_names = [model["Model Name (ID)"] for model in models]
             if model_name in model_names:
-                # 显示确认对话框
-                confirmation = st.checkbox("Are you sure you want to delete the model?")
+                # 删除模型
+                try:
+                    response = openai.Model.delete(model_name)
 
-                # 当确认对话框为True时执行删除操作
-                if confirmation:
-                    # 删除模型
-                    try:
-                        response = openai.Model.delete(model_name)
-
-                        # 判断删除是否成功
-                        if response.get("deleted"):
-                            # 显示成功消息
-                            st.success("Model deleted successfully.")
-                        else:
-                            # 显示失败消息
-                            st.error("Failed to delete the model.")
-                    except openai.error.APIError as e:
-                        st.error(str(e))
+                    # 判断删除是否成功
+                    if response.get("deleted"):
+                        # 显示成功消息
+                        st.success("Model deleted successfully.")
+                    else:
+                        # 显示失败消息
+                        st.error("Failed to delete the model.")
+                except openai.error.APIError as e:
+                    st.error(str(e))
             else:
                 st.warning("Please enter a valid model name.")
         else:
