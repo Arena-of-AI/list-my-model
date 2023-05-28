@@ -2,6 +2,9 @@ import streamlit as st
 import openai
 from datetime import datetime
 
+# 设置标题
+st.title("List of Your Fine-Tuned Models")
+
 # 输入API密钥
 api_key = st.text_input("Enter your OpenAI API KEY")
 
@@ -39,8 +42,6 @@ def list_models():
         st.error(str(e))
         return []
 
-# 设置标题
-st.title("List of Models")
 
 # 调用函数以获取所有模型
 models = list_models()
@@ -51,7 +52,7 @@ if models:
     st.table(models)
 
     # 添加对话框和删除按钮
-    model_name = st.text_input("To avoid accidental deletion, please type the model name you want to delete")
+    model_name = st.text_input("To avoid accidental deletion, if you want to delete one of the models listed above, please type the model name here")
     delete_button = st.button("Delete")
 
     # 当删除按钮被按下时执行删除操作
