@@ -46,15 +46,13 @@ def list_models():
 # 调用函数以获取所有模型
 models = list_models()
 
-st.title("Delete Your Fine-Tuned Models")
-
-
 # 检查模型列表是否为空
 if models:
     # 显示模型列表的表格
     st.table(models)
 
     # 添加对话框和删除按钮
+    st.title("Delete Your Fine-Tuned Models")
     model_name = st.text_input("To avoid accidental deletion, please type the model name (ID) you want to delete here")
     delete_button = st.button("Delete")
 
