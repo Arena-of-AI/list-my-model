@@ -48,6 +48,7 @@ models = list_models()
 
 st.title("Delete Your Fine-Tuned Models")
 
+
 # 检查模型列表是否为空
 if models:
     # 显示模型列表的表格
@@ -68,16 +69,28 @@ if models:
                 # 当确认对话框为True时执行删除操作
                 if confirmation:
                     # 删除模型
-                    response = openai.Model.delete(model_name)
+                    st.text("Deleting the model...")
+
+                    # 执行命令并捕获输出
+                    process = subprocess.Popen(
+                        ['openai', 'model', 'delete', model_name],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE
+                    )
+                    stdout, stderr = process.communicate()
+
+                    # 解析命令输出
+                    try:
+                        response = json.loads(stdout)
+                    except json.JSONDecodeError:
+                        response = {}
 
                     # 判断删除是否成功
                     if response.get("deleted"):
-                        # 等待终端响应，显示成功消息
-                        st.text("Deleting the model...")
+                        # 显示成功消息
                         st.success("Model deleted successfully.")
                     else:
-                        # 等待终端响应，显示失败消息
-                        st.text("Deleting the model...")
+                        # 显示失败消息
                         st.error("Failed to delete the model.")
             else:
                 st.warning("Please enter a valid model name.")
